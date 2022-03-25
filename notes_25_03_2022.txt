@@ -471,14 +471,14 @@ ON Emp.COMPID = Com.COMPID
 Display employee id , employee name, model, make and computer id.
 
 computer
-COMPID	MAKE	MODEL	MYEAR
-1001	Dell	Vostro	2013
+COMPID	MAKE	MODEL	       MYEAR
+1001	Dell	Vostro	        2013
 1002	Dell	Precision	2014
-1003	Lenovo	Edge	2013
-1004	Lenovo	Horizon	2014
+1003	Lenovo	Edge	        2013
+1004	Lenovo	Horizon	        2014
 
 employee
-ID	ENAME	DEPT	COMPID
+ID	ENAME	        DEPT	COMPID
 1	James Potter	ICP	1001
 2	Ethan McCarty	ETA	NULL
 3	Emily Rayner	ETA	1002
@@ -498,10 +498,10 @@ ON emp.compid=comp.compid
 [ If we are writing JOIN, it is inner join only ]
 
 
-ID	ENAME	MODEL	MAKE	COMPID
-1	James Potter	Vostro	Dell	1001
-3	Emily Rayner	Precision	Dell	1002
-5	Ayaz Mohammad	Edge	Lenovo	1003
+ID	ENAME	        MODEL	     MAKE	        COMPID
+1	James Potter	Vostro	     Dell	        1001
+3	Emily Rayner	Precision    Dell	        1002
+5	Ayaz Mohammad	Edge	     Lenovo	        1003
   
 ------------------------------------------------------------------------------------------
 
@@ -515,13 +515,17 @@ ID	ENAME	        DEPT	COMPID
 3	Emily Rayner	ETA	1002
 4	Jack Abraham	ETA	NULL
 5	Ayaz Mohammad	ICP	1003
-6	Ayaz Mohammad	ICP	1005
+
 Display the departmentwise count of laptops.
 
 SELECT dept,count(compid)
 FROM employee
 GROUP BY dept;
---------------------------------------------
+
+DEPT	COUNT(COMPID)
+ETA	1
+ICP	2
+----------------------------------------------------------------------------------------------
 
 employee
 ID	ENAME	        DEPT	COMPID
@@ -548,4 +552,10 @@ FROM employee emp INNER JOIN computer comp
 ON emp.compid=comp.compid
 WHERE make='Dell'
 GROUP BY dept;
+
+
+DEPT	COUNT(EMP.COMPID)
+ETA	1
+ICP	1
+
 ---------------------------------------------------------------------------------------------------
