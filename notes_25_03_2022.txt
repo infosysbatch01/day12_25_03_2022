@@ -303,3 +303,144 @@ HAVING dept='ICP'
 
 If the query does not adhere to these points, either it gives syntax error or it may result in a wrong output.
 
+------------------------------------------------------------------------------------------------------
+employee
+
+ID	ENAME  	        DOJ	        SALARY	BONUS	DEPT	DESIGNATION MANAGER	COMPID
+1	James Potter	01-Jun-14	75000	1000	ICP	PM	    NULL	1001
+2	Ethan McCarty	01-Feb-14	90000	1200	ETA	PM	    NULL	NULL
+3	Emily Rayner	01-Jan-14	25000	100	ETA	SE	    2	        1002
+4	Jack Abraham	01-Jul-14	30000	NULL	ETA	SSE	    2	        NULL
+5	Ayaz Mohammad	01-Apr-14	40000	NULL	ICP	TA  	    1	        1003
+
+
+computer
+COMPID	MAKE	MODEL	    MYEAR
+1001	Dell	Vostro	    2013
+1002	Dell	Precision   2014
+1003	Lenovo	Edge	    2013
+1004	Lenovo	Horizon	    2014
+
+
+Display id (employeeid) name compid and computer make and model.
+
+
+---------------------------------------------------------------------------------------------
+CREATE TABLE employeedetails1(
+   code VARCHAR2(5) PRIMARY KEY,
+   name VARCHAR2(20),
+   desig VARCHAR2(20),
+   dept VARCHAR2(20),
+   basic NUMBER(7,2)
+);
+
+INSERT INTO employeedetails1 VALUES('E0001','Sudhir','Mgr','Sales',34000);
+INSERT INTO employeedetails1 VALUES('E0002','Janardhan','Clerk','HR',5000);
+
+
+CREATE TABLE employeedetails2(
+   code VARCHAR2(6) PRIMARY KEY,
+   empname VARCHAR2(25),
+   empdesig VARCHAR2(25),
+   empdept VARCHAR2(25),
+   empbasic NUMBER(7,2)
+);
+
+
+INSERT INTO employeedetails2 VALUES('E0001','Sudhir','Mgr','Sales',34000);
+INSERT INTO employeedetails2 VALUES('E0002','Janardhan','Clerk','HR',5000);
+INSERT INTO employeedetails2 VALUES('E0003','Sunita','AsstMgr','HR',31000);
+
+
+SELECT * FROM employeedetails1
+UNION
+SELECT * FROM employeedetails2
+
+
+CODE	NAME	  DESIG	    DEPT	 BASIC
+E0001	Sudhir	   Mgr	    Sales	 34000
+E0002	Janardhan  Clerk    HR	         5000
+E0003	Sunita	   AsstMgr  HR	         31000
+
+
+SELECT * FROM employeedetails2
+UNION
+SELECT * FROM employeedetails1
+
+ID	EMPNAME	EMPDESIG	EMPDEPT	EMPBASIC
+E0001	Sudhir	Mgr	Sales	34000
+E0002	Janardhan	Clerk	HR	5000
+E0003	Sunita	AsstMgr	HR	31000
+
+SELECT code,name FROM employeedetails1
+UNION
+SELECT empdesig,empdept FROM employeedetails2 
+
+CODE	NAME
+AsstMgr	HR
+Clerk	HR
+E0001	Sudhir
+E0002	Janardhan
+Mgr	Sales
+
+SELECT code,name FROM employeedetails1
+UNION
+SELECT empdesig,empbasic FROM employeedetails2 
+
+[ORA-01790: expression must have same datatype as corresponding expression]
+name and empbasic are of different datatype. But no issue with code and empdesig as they are
+of same type.
+
+SELECT * FROM employeedetails1
+UNION ALL
+SELECT * FROM employeedetails2
+
+
+SELECT code,name FROM employeedetails1
+UNION ALL
+SELECT id FROM employeedetails2
+[ The above union statement is incorrect as the number of columns are not same]
+----------------------------------------------------------------------------------------------------
+The points which needs to be taken care of:
+* datatypes order should be same.
+* number of columns for both the select should be same.
+* column names of the resultset after union is the name of the columns used in first select statement.
+* In union we dont get repeated or duplicate values but in union all we will get the duplicate 
+values.
+* In union the data is sorted on the first column of the resultset.
+-------------------------------------------------------------------------------------------
+SELECT code,name FROM employeedetails1
+UNION ALL
+SELECT code,empname FROM employeedetails2 ORDER BY code
+
+[ So to sort the data , we have to specify the column name. * wont work]
+
+CREATE TABLE employeedetails3(
+   code VARCHAR2(5) PRIMARY KEY,
+   name VARCHAR2(20),
+   desig VARCHAR2(20),
+   dept VARCHAR2(20),
+   basic NUMBER(7,2)
+);
+
+INSERT INTO employeedetails3 VALUES('E0001','Sudhir','Mgr','Sales',34000);
+INSERT INTO employeedetails3 VALUES('E0002','Janardhan','Clerk','HR',5000);
+
+
+CREATE TABLE employeedetails4(
+   empcode VARCHAR2(6) PRIMARY KEY,
+   empname VARCHAR2(25),
+   empdesig VARCHAR2(25),
+   empdept VARCHAR2(25),
+   empbasic NUMBER(7,2)
+);
+
+
+INSERT INTO employeedetails4 VALUES('E0001','Sudhir','Mgr','Sales',34000);
+INSERT INTO employeedetails4 VALUES('E0002','Janardhan','Clerk','HR',5000);
+INSERT INTO employeedetails4 VALUES('E0003','Sunita','AsstMgr','HR',31000);
+
+SELECT code,name FROM employeedetails3
+UNION ALL
+SELECT empcode,empname FROM employeedetails4 ORDER BY code
+---------------------------------------------------------------------------------------------
