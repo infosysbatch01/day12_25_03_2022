@@ -559,3 +559,121 @@ ETA	1
 ICP	1
 
 ---------------------------------------------------------------------------------------------------
+Q1 Display the department and count where count of computer assigned to a department is more than 1.
+SELECT DEPT,COUNT(COMPID)
+FROM employee 
+GROUP BY DEPT 
+HAVING COUNT(compid)>1;
+Q2 Display the department where the count of computer assigned to a department is more than 1.
+SELECT DEPT
+FROM employee 
+GROUP BY DEPT 
+HAVING COUNT(compid)>1;
+
+[ in sql we dont use == for comparison . We use = ]
+Q Display the department where the count of computer assigned is 2.
+SELECT DEPT
+FROM employee 
+GROUP BY DEPT 
+HAVING COUNT(compid)=2;
+
+Q Display employee id, employeename, make, model and make year.
+                      [id,ename,make,model,myear]
+
+select id,ename,make,model,myear 
+from employee e join computer c 
+on e.compid=c.compid;
+
+select e.id,e.ename,c.make,c.model,c.myear 
+from employee e join computer c 
+on e.compid=c.compid;
+
+
+Q Display employee id , employeename , make, model and make year for employee with id 1.
+SELECT empid,ename, make,model,myear 
+FROM Employee E INNER JOIN COMPUTER C 
+ON E.compid=C.compid WHERE empid=1;
+
+
+Q Display employee id , employeename , make, model and make year 
+for employee with id 1 and 5.
+SELECT empid,ename, make,model,myear 
+FROM Employee E INNER JOIN COMPUTER C 
+ON E.compid=C.compid WHERE empid =1 or empid=5 ;
+
+
+SELECT  Id, Ename,Make, model,myear
+from employee e  inner join computer c on 
+e.computerid=c.computerid where id IN(1,5);
+
+Q Display employee id , employeename SORTED om employee's name.
+SELECT  Id, Ename
+FROM employee
+ORDER BY ename;
+
+
+Q Display computer id, make,model where make year is after 2013.
+SELECT ID,MAKE,MODEL FROM COMPUTER WHERE MAKE>2013;
+
+Q Display computer id, make,model where make year is not 2013.
+SELECT ID,MAKE,MODEL FROM COMPUTER WHERE MAKE<>2013;
+
+
+
+Q Display computer id, make,model where make year is 2013 or more.
+SELECT ID,MAKE,MODEL FROM COMPUTER WHERE MAKE>=2013
+
+
+Q Display computer id, make,model where make year is between 2014 and 2015.
+SELECT ID,MAKE,MODEL FROM COMPUTER WHERE MAKE BETWEEN 2014 AND 2015;
+
+Q Display the count of employees who have not received any computer.
+SELECT COUNT(empid) FROM employee WHERE compid IS NULL;
+
+Q Display the count of employees who have received computer.
+SELECT COUNT(empid) FROM employee WHERE compid IS NOT NULL;
+
+Q Count and display the count  where the make is DELL.
+SELECT count(emp.compid)
+FROM employee emp INNER JOIN computer comp
+ON emp.compid=comp.compid
+WHERE make='Dell'
+
+
+Q Display the total number of computers from ICP and ETA departments.
+SELECT count(compid)
+FROM employee
+WHERE dept IN('ICP','ETA');
+
+
+Q Display the departmentwise count of computers for ICP and ETA.
+  
+SELECT dept,count(compid)
+FROM employee
+WHERE dept IN('ICP','ETA')
+GROUP BY dept;
+
+
+Q Display the employee's name who got the make of DELL and model as Precision.
+SELECT ename
+FROM employee JOIN computer
+ON employee.compid=computer.compid
+WHERE make='Dell' AND model='Precision';
+
+
+Q Display the record as 
+  The employee with the id 1 is known as James Potter with the computer id as 1001.
+ 
+SELECT 'The employee with the id '||id||' is known as '||ename||' with the computer id as'||compid
+ FROM employee WHERE id=1001;
+
+Q Display the record as 
+   The employee with the id 1 is known as James Potter with the computer id as 1001 and make as DELL.
+------------------------------------------------------------------------------------------------------
+SELECT distinct name,address
+
+
+
+  Rahul Kolkata
+  Rahul Delhi
+  Rahul Kolkata
