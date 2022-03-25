@@ -1,0 +1,305 @@
+A system table called dual . This table can be used to see the usage of a function or of an expression.
+
+SELECT 2+2 FROM dual
+
+SELECT upper(substr('Welcome',4,3)) FROM dual; -- com
+  
+    substr(string,startindex)
+    substr(string,startindex,length)   
+----------------------------------------------------------
+Q Display the doj and doj month from the employee table.
+  SELECT doj,to_char(doj,'MONTH') from employee;
+  SELECT doj,to_char(doj,'Month') from employee;
+  SELECT doj,to_char(doj,'month') FROM employee;
+
+
+Q.  Display the employee details whose date of birth is in the month JUNE.
+
+   SELECT *  FROM employee 
+   WHERE to_char(doj,'Month')='June';
+
+   SELECT *  FROM employee 
+   WHERE to_char(doj,'month')='june';
+
+SELECT *  FROM employee 
+   WHERE to_char(doj,'MONTH')='JUNE';
+
+
+  SELECT * from employee where to_char(doj,'yyyy')=2020
+
+---------------------------------------------------------------------------------------------------
+Q. Display the sum of salary in the employee table.
+A.  SELECT sum(salary) FROM employee;
+
+Q Display the sum of salary where the dept is ETA.
+A SELECT sum(salary) FROM employee WHERE dept='eta';
+-- It is displaying as null because we have the dept as ETA and not eta. Records are case sensitive.
+
+ SELECT sum(salary) FROM employee WHERE dept='ETA';
+ SELECT sum(salary) FROM employee WHERE dept='ICP';
+
+
+Q Display the sum of salary for the department ETA and ICP.
+SELECT sum(salary) FROM employee WHERE dept IN ('ICP','ETA');
+
+
+SELECT sum(salary) FROM employee WHERE dept='ICP' AND dept='ETA';
+
+Q Display the sum of salary departmentwise.
+
+ SELECT sum(salary)
+ FROM employee
+ GROUP BY dept;
+
+
+SELECT dept,sum(salary)
+ FROM employee
+ GROUP BY dept;
+[ Whenever we use group by clause , we work more on aggregate functions ]
+
+Q Diplay the count of employees in each department.
+
+ SELECT dept,count(id)
+ FROM employee
+ GROUP BY dept;
+
+Q Display depatmentwise maximum salary.
+
+ SELECT dept,max(salary)
+ FROM employee
+ GROUP BY dept;
+
+
+Group By converts the entire rows in a group into a single row in result. You cannot fetch details from individual rows in a category. Let us try to fetch count and names of employees in each department.
+
+SELECT Dept, ENAME, Count(ID) 
+FROM Employee 
+GROUP BY Dept;
+[ORA-00979: not a GROUP BY expression]
+
+If we want that the above command executes we have to include ename also
+in the group by clause.
+
+SELECT Dept, ENAME, Count(ID) 
+FROM Employee 
+GROUP BY Dept,ename;
+[ Non aggregate column like dept and ename if are present in the
+select statement, then they should be used in the group by clause.
+If we are not including all the columns which are present with select,
+The sql statement will show error during the execution]
+
+ID       NAME		DOJ		salary  bonus   dept    designation		
+1	James Potter	01-Jun-14	75000	1000	ICP	PM
+2	Ethan McCarty	01-Feb-14	90000	1200	ETA	PM
+3	Emily Rayner	01-Jan-14	25000	100	ETA	SE
+4	Jack Abraham	01-Jul-14	30000	NULL	ETA	SSE
+5	Ayaz Mohammad	01-Apr-14	40000	NULL	ICP	TA
+
+SELECT Dept, ENAME, Count(ID) 
+FROM Employee 
+GROUP BY Dept,ename;
+  
+  dept   ename              count
+  ETA    Ethan McCarty	    1
+  ETA    Emily Rayner       1
+  ETA    Jack Abraham       1
+  ICP    James Potter       1
+  ICP    Ayaz Mohammad      1
+
+
+
+ID       NAME		DOJ		salary  bonus   dept    designation		
+1	James Potter	01-Jun-14	75000	1000	ICP	PM
+2	Ethan McCarty	01-Feb-14	90000	1200	ETA	PM
+3	Emily Rayner	01-Jan-14	25000	100	ETA	SE
+4	Jack Abraham	01-Jul-14	30000	NULL	ETA	SSE
+5	Ayaz Mohammad	01-Apr-14	40000	NULL	ICP	TA
+6       James Potter    12-Mar-15       45000   NULL    ICP     SE
+
+SELECT Dept, ENAME, Count(ID) 
+FROM Employee 
+GROUP BY Dept,ename;
+  
+ 
+  dept   ename              count
+  ETA    Ethan McCarty	    1
+  ETA    Emily Rayner       1
+  ETA    Jack Abraham       1
+  ICP    James Potter       2
+  ICP    Ayaz Mohammad      1
+
+
+SELECT Dept, ENAME, Count(ID) 
+FROM Employee 
+GROUP BY ename,dept;    
+
+
+Q Display departmentwise , designationwise maximum salary
+
+
+ID       NAME		DOJ		salary  bonus   dept    designation		
+1	James Potter	01-Jun-14	75000	1000	ICP	PM
+2	Ethan McCarty	01-Feb-14	90000	1200	ETA	PM
+3	Emily Rayner	01-Jan-14	25000	100	ETA	SE
+4	Jack Abraham	01-Jul-14	30000	NULL	ETA	SSE
+5	Ayaz Mohammad	01-Apr-14	40000	NULL	ICP	TA
+6       James Potter    12-Mar-15       45000   NULL    ICP     SE
+7       Jonathen        12-Mar-15       55000   NULL    ICP     TA
+8       Samuel          11-Feb-13       90000   2000    ICP     PM
+
+SELECT Dept, Designation, MAX(Salary) FROM Employee GROUP BY Dept, Designation;
+ 
+ETA	SE	25000
+ETA	SSE	30000
+ICP	PM	90000
+ICP	TA	55000
+ETA	PM	90000
+--------------------------------------------------------------------------------------------
+If we need to give some condition after grouping , we need to use having clause
+alongwith group by.
+
+Display department wise count of employee where the count of employees are more than 2.
+
+SELECT dept,count(id)
+FROM employee
+GROUP BY dept
+HAVING count(id)>2;
+[ With having we use aggregate functions to give condition ]
+---------------------------------------------------------------------------------------------
+Do’s for Group by and Having clauses:
+
+GROUP BY clause should contain all non-aggregate columns that are present in SELECT clause
+SELECT designation,dept,count(id)
+FROM employee
+GROUP BY designation;
+[ The above SQL statement is incorrect because in the select statement we have dept but in 
+  group by we are not using dept]
+
+
+SELECT designation,dept,count(id)
+FROM employee
+GROUP BY designation,dept;
+[ The above statement is correct as in the select statement we have designation and dept and 
+  so in the group by clause]
+
+
+GROUP BY clause should be mandatory when there is a list of aggregate and non-aggregate columns in SELECT statement
+
+SELECT designation,count(id)
+FROM employee
+[ The above SQL is incorrect , as we have not used the group by clause]
+
+SELECT designation,count(id)
+FROM employee
+GROUP BY designation
+[ The above SQL statement is correct]
+
+Whenever nested aggregate columns appear in the SELECT clause, GROUP BY clause should be mandatorily used
+
+SELECT max(count(id))
+FROM employee
+[ The above SQL is incorrect]
+
+SELECT desig,count(id)
+FROM employee
+GROUP BY designation
+
+  Mgr      3
+  AsstMgr  6
+  Clerk    10
+
+SELECT count(id)
+FROM employee
+GROUP BY designation
+  3
+  6
+  10
+
+
+SELECT max(count(id))
+FROM employee
+group by designation;
+
+   10
+ 
+[ The above SQL is correct. The above SQL statement will return the max number of employees for a 
+particular designation]
+
+
+
+
+HAVING cannot be written without the GROUP BY clause in the query
+
+
+SELECT designation,count(id)
+FROM employee
+having count(id)>=2
+[ The above SQL is incorrect as we dont have group by clause]
+
+SELECT designation,count(id)
+FROM employee
+group by designation
+having count(id)>=2
+[ The above SQL statement is correct]
+
+Aggregate column condition(s) should always be written along with the HAVING clause and not with the WHERE clause
+
+
+SELECT designation,count(id)
+FROM employee
+WHERE count(id)>=2
+group by designation
+[ The above statement is incorrect as we are using where and aggregate function]
+
+
+SELECT designation,count(id)
+FROM employee
+group by designation
+HAVING count(id)>=2
+[ The above statement is correct]
+
+Don’ts for Group by and Having clauses:
+
+Columns from the list of the SELECT clause should not be skipped in the GROUP BY clause. However, you can add an extra non-aggregate column which is not present in the SELECT to the GROUP BY clause
+
+
+SELECT count(id)
+FROM employee
+GROUP BY dept;
+[ The above sql is possible where in the select we are not mentioning any non aggregate column 
+  but we are mention it in the group by clause but reverse is not possible which means columns
+are mentioned along with select but is not available in the group by clause.]
+
+SELECT dept,desig,count(id)
+FROM employee
+GROUP BY dept;
+[ The above statement is incorrect as we missed mentioning desig in the group by clause.]
+
+
+
+GROUP BY clause should not contain any aggregate columns
+
+SELECT designation,count(id)
+FROM employee
+group by id
+[ The above SQL is incorrect]
+
+Aliased name given for the column should not be used in GROUP BY clause
+
+SELECT designation desig,count(id)
+FROM employee
+group by desig
+[ We cannot use the alias name in the group by clause]
+
+HAVING clause should not contain non-aggregate columns which are not present in the GROUP BY clause
+
+
+
+SELECT designation,count(id)
+FROM employee
+group by designation
+HAVING dept='ICP'
+
+
+If the query does not adhere to these points, either it gives syntax error or it may result in a wrong output.
+
