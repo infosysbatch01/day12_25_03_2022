@@ -444,3 +444,108 @@ SELECT code,name FROM employeedetails3
 UNION ALL
 SELECT empcode,empname FROM employeedetails4 ORDER BY code
 ---------------------------------------------------------------------------------------------
+
+SELECT ID, ENAME, COMPID, MODEL 
+FROM Employee  INNER JOIN Computer 
+ON Employee.COMPID = Computer.COMPID
+
+ [ ORA-00918: column ambiguously defined ]
+
+-----------------------------------------------------------------------------
+SELECT ID, ENAME, Employee.COMPID, MODEL 
+FROM Employee  INNER JOIN Computer 
+ON Employee.COMPID = Computer.COMPID
+------------------------------------------------------------------------
+SELECT ID, ENAME, Computer.COMPID, MODEL 
+FROM Employee  INNER JOIN Computer 
+ON Employee.COMPID = Computer.COMPID
+---------------------------------------------------------------------------
+SELECT ID, ENAME, Employee.COMPID, Computer.COMPID, MODEL 
+FROM Employee  INNER JOIN Computer 
+ON Employee.COMPID = Computer.COMPID
+--------------------------------------------------------------------------------------
+SELECT ID, ENAME, Emp.COMPID AS E_COMPID, Com.COMPID AS C_COMPID, MODEL 
+FROM Employee Emp INNER JOIN Computer Com
+ON Emp.COMPID = Com.COMPID
+----------------------------------------------------------------------------------
+Display employee id , employee name, model, make and computer id.
+
+computer
+COMPID	MAKE	MODEL	MYEAR
+1001	Dell	Vostro	2013
+1002	Dell	Precision	2014
+1003	Lenovo	Edge	2013
+1004	Lenovo	Horizon	2014
+
+employee
+ID	ENAME	DEPT	COMPID
+1	James Potter	ICP	1001
+2	Ethan McCarty	ETA	NULL
+3	Emily Rayner	ETA	1002
+4	Jack Abraham	ETA	NULL
+5	Ayaz Mohammad	ICP	1003
+
+  
+SELECT id,ename,model,make,comp.compid
+FROM employee emp INNER JOIN computer comp
+ON emp.compid=comp.compid
+
+OR
+
+SELECT id,ename,model,make,comp.compid
+FROM employee emp JOIN computer comp
+ON emp.compid=comp.compid
+[ If we are writing JOIN, it is inner join only ]
+
+
+ID	ENAME	MODEL	MAKE	COMPID
+1	James Potter	Vostro	Dell	1001
+3	Emily Rayner	Precision	Dell	1002
+5	Ayaz Mohammad	Edge	Lenovo	1003
+  
+------------------------------------------------------------------------------------------
+
+Display department and number of computers made by Dell allocated in that department.
+
+
+employee
+ID	ENAME	        DEPT	COMPID
+1	James Potter	ICP	1001
+2	Ethan McCarty	ETA	NULL
+3	Emily Rayner	ETA	1002
+4	Jack Abraham	ETA	NULL
+5	Ayaz Mohammad	ICP	1003
+6	Ayaz Mohammad	ICP	1005
+Display the departmentwise count of laptops.
+
+SELECT dept,count(compid)
+FROM employee
+GROUP BY dept;
+--------------------------------------------
+
+employee
+ID	ENAME	        DEPT	COMPID
+1	James Potter	ICP	1001
+2	Ethan McCarty	ETA	NULL
+3	Emily Rayner	ETA	1002
+4	Jack Abraham	ETA	NULL
+5	Ayaz Mohammad	ICP	1003
+
+
+
+computer
+COMPID	MAKE	MODEL	    MYEAR
+1001	Dell	Vostro	    2013
+1002	Dell	Precision   2014
+1003	Lenovo	Edge	    2013
+1004	Lenovo	Horizon     2014
+1005	Dell	XYZ         2015
+
+Display the departmentwise count of laptops where the make is DELL.
+
+SELECT dept,count(emp.compid)
+FROM employee emp INNER JOIN computer comp
+ON emp.compid=comp.compid
+WHERE make='Dell'
+GROUP BY dept;
+---------------------------------------------------------------------------------------------------
